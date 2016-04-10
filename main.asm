@@ -95,8 +95,8 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 			.ELSEIF uMsg == WM_PAINT
 				invoke BeginPaint, hWnd, ADDR ps
 				mov hdc, eax
-				invoke MoveToEx, hdc, 100, 100, NULL
-				invoke LineTo, hdc, 200, 200
+				invoke MoveToEx, hdc, 500, 10, NULL
+				invoke LineTo, hdc, 500, 500
 				invoke EndPaint, hWnd, ADDR ps
 			.ELSE
 				invoke DefWindowProc, hWnd, uMsg, wParam, lParam
