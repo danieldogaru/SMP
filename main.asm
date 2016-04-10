@@ -9,17 +9,23 @@ option casemap:none ;nume de functii, variabile - case sensitive
 
 ; Incarcarea librariilor specifice MASM32
 include e:\masm32\include\windows.inc
+
 include e:\masm32\include\user32.inc
 includelib e:\masm32\lib\user32.lib
+
 include e:\masm32\include\kernel32.inc
 includelib e:\masm32\lib\kernel32.lib
+
+; librarii pentru grafica: line, elipse etc.
+include e:\masm32\include\gdi32.inc
+includelib e:\masm32\lib\gdi32.lib
 
 WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 
 .DATA ; variabile initializate
 	ClassName db "SimpleWinClass", 0
 	AppName   db "Tema SMP", 0	;Titlul ferestrei
-	OurText db "Win32 assembly is great and easy!",0
+	OurText   db "Win32 assembly is great and easy!" ,0
 
 .DATA? ;variabile neinitializate
 	hInstance HINSTANCE ?
@@ -69,7 +75,7 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 			invoke ShowWindow, hwnd,CmdShow
 			invoke UpdateWindow, hwnd
 			.WHILE TRUE
-			invoke GetMessage, ADDR msg,NULL,0,0
+			invoke GetMessage, ADDR msg, NULL, 0, 0
 			.BREAK .IF (!eax)
 			invoke TranslateMessage, ADDR msg
 			invoke DispatchMessage, ADDR msg
@@ -89,9 +95,8 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 			.ELSEIF uMsg == WM_PAINT
 				invoke BeginPaint, hWnd, ADDR ps
 				mov hdc, eax
-				invoke GetClientRect, hWnd, ADDR rect
-				invoke DrawText, hdc, ADDR OurText, -1, ADDR rect, \
-				DT_SINGLELINE or DT_CENTER or DT_VCENTER
+				invoke MoveToEx, hdc, 100, 100, NULL
+				invoke LineTo, hdc, 200, 200
 				invoke EndPaint, hWnd, ADDR ps
 			.ELSE
 				invoke DefWindowProc, hWnd, uMsg, wParam, lParam
