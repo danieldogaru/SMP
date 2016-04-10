@@ -3,9 +3,9 @@
 ; Dezvoltat utilizand MASM32
 ; Aprilie 2016
 
-.386
+.386 ; Arhitectura Intel 
 .model flat,stdcall
-option casemap:none
+option casemap:none ;nume de functii, variabile - case sensitive
 
 ; Incarcarea librariilor specifice MASM32
 include e:\masm32\include\windows.inc
@@ -16,11 +16,12 @@ includelib e:\masm32\lib\kernel32.lib
 
 WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 
-.DATA
+.DATA ; variabile initializate
 	ClassName db "SimpleWinClass", 0
-	AppName   db "Tema SMP", 0 ;Titlul ferestrei
+	AppName   db "Tema SMP", 0	;Titlul ferestrei
+	OurText db "Win32 assembly is great and easy!",0
 
-.DATA?
+.DATA? ;variabile neinitializate
 	hInstance HINSTANCE ?
 
 .CODE
@@ -78,8 +79,20 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 	    WinMain endp
 
 		WndProc proc hWnd:HWND, uMsg:UINT, wParam:WPARAM, lParam:LPARAM
+			LOCAL hdc:HDC
+			LOCAL ps:PAINTSTRUCT
+			LOCAL rect:RECT
+
 			.IF uMsg == WM_DESTROY
 				invoke PostQuitMessage, NULL
+
+			.ELSEIF uMsg == WM_PAINT
+				invoke BeginPaint, hWnd, ADDR ps
+				mov hdc, eax
+				invoke GetClientRect, hWnd, ADDR rect
+				invoke DrawText, hdc, ADDR OurText, -1, ADDR rect, \
+				DT_SINGLELINE or DT_CENTER or DT_VCENTER
+				invoke EndPaint, hWnd, ADDR ps
 			.ELSE
 				invoke DefWindowProc, hWnd, uMsg, wParam, lParam
 				ret
