@@ -215,6 +215,137 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 				invoke MoveToEx, hdc, lastX, lastY, NULL
 				invoke LineTo, hdc, lastX, refY
 
+				; segmentul EI
+				invoke MoveToEx, hdc,  refX, lastY, NULL
+
+				; coordonata X a lui I
+				mov eax, mUnit
+				mov ecx, 4
+
+				mul ecx
+				add eax, refX
+				mov lastX, eax
+
+				; coordona Y a lui I
+				mov eax, mUnit
+				mov ecx, 12
+
+				mul ecx
+
+				mov ecx, refY 
+				sub ecx, eax
+
+				mov lastY, ecx
+
+				invoke LineTo, hdc, lastX, lastY
+				
+				; segmentul IH
+				invoke MoveToEx, hdc, lastX, lastY, NULL
+				
+				; coordonata X a lui H
+				mov eax, mUnit
+				mov ecx, 12
+
+				mul ecx
+				add eax, refX
+				mov lastX, eax
+
+				; coordonata Y a lui H coincide cu cea a lui I
+				invoke LineTo, hdc, lastX, lastY
+
+				; segmentul HC
+				invoke MoveToEx, hdc, lastX, lastY, NULL
+				
+				; coordonata Y a lui C
+				mov eax, mUnit
+				mov ecx, 4
+				
+				mul ecx
+
+				mov ecx, refY
+				sub ecx, eax
+
+				mov lastY, ecx
+				
+				invoke LineTo, hdc, lastX, lastY
+
+				; segmentul ID
+
+				; coordonata X a lui D
+				mov eax, mUnit
+				mov ecx, 4
+				
+				mul ecx
+
+				mov ecx, refX
+				add ecx, eax
+
+				mov lastX, ecx
+				
+				
+				; coordonata Y a lui D corespunde cu cea a lui C
+				invoke MoveToEx, hdc, lastX, lastY, NULL
+
+				; coordonata X a lui I corespunde cu cea a lui D
+				; coordonata Y a lui I
+				mov eax, mUnit
+				mov ecx, 12
+				
+				mul ecx
+
+				mov ecx, refY
+				sub ecx, eax
+
+				mov lastY, ecx
+				
+				invoke LineTo, hdc, lastX, lastY
+				
+				; segmentul HG
+				; coordonata X a lui H
+				mov eax, mUnit
+				mov ecx, 12
+				
+				mul ecx
+
+				mov ecx, refX
+				add ecx, eax
+
+				mov lastX, ecx
+
+				; coordonata Y a lui H
+				mov eax, mUnit
+				mov ecx, 12
+				
+				mul ecx
+
+				mov ecx, refY
+				sub ecx, eax
+
+				mov lastY, ecx
+
+				invoke MoveToEx, hdc, lastX, lastY, NULL
+
+				; coordonata X a lui G
+				mov eax, mUnit
+				mov ecx, 8
+
+				mul ecx
+				add eax, refX
+				mov lastX, eax
+
+				;coordonta Y a punctului G
+				mov eax, mUnit
+				mov ecx, 8
+				
+				mul ecx
+
+				mov ecx, refY
+				sub ecx, eax
+
+				mov lastY, ecx
+				
+				invoke LineTo, hdc, lastX, lastY 				
+
 				invoke EndPaint, hWnd, ADDR ps
 			.ELSE
 				invoke DefWindowProc, hWnd, uMsg, wParam, lParam
