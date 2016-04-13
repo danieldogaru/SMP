@@ -124,13 +124,14 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 				mov ecx, 8	   ; numar aleatoriu de unitati - pentru a genera forma patratica
 
 				mul ecx		   ; multiplica mUint cu 8, rezultat stocat in registrul eax
+				
+				add eax, refX  ; aduna referinta la valoare X calculata
+				mov lastX, eax ; stocheaza in lastX
 
-				mov ebx, eax   ; pastreaza valoarea lui registrului eax in registrul ebx
- 
-				invoke LineTo, hdc, ebx, refY ; trasare segment pana la destinatie - punct destinatie B
+				invoke LineTo, hdc, lastX, refY ; trasare segment pana la destinatie - punct destinatie B
 				
 				;segmentul BC
-				invoke MoveToEx, hdc, ebx, refY, NULL  ; folosesc ebx - coordonata pe X a punctului B, calculata anterior
+				invoke MoveToEx, hdc, lastX, refY, NULL  ; folosesc ebx - coordonata pe X a punctului B, calculata anterior
 													   ; coordonata Y a punctul B este referinta setata			
 	
 				;stabilirea coordonatei X - punctul C
@@ -166,13 +167,53 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 				add eax, refX
 				mov lastX, eax
 
-				;coordonata pe axa Y a lui D coincide cu cea a lui C, calculata anterior
+				; coordonata pe axa Y a lui D coincide cu cea a lui C, calculata anterior
 				
 				invoke LineTo, hdc, lastX, lastY
 
-				;segmentul AD
+				; segmentul AD
 				invoke MoveToEx, hdc, lastX, lastY, NULL ; coordonatele lui D
 				invoke LineTo, hdc, refX, refY			 ; coordonatele lui A sunt in referinta
+
+
+
+				; segmentul AE
+				invoke MoveToEx, hdc, refX, refY, NULL ; coordonatele lui A
+				
+				; coordonata pe axa X a lui E coincide cu cea a lui A
+				; coordonata pe axa Y a lui E
+				mov eax, mUnit
+				mov ecx, 8
+
+				mul ecx
+				
+				mov ecx, refY 
+				sub ecx, eax
+
+				mov lastY, ecx
+		
+				invoke LineTo, hdc, refX, lastY
+
+				; segmentul EG
+				invoke MoveToEx, hdc, refX, lastY, NULL ; coordonatele lui E
+				
+				; coordonata pe X a punctului G
+				mov eax, mUnit
+				mov ecx, 8
+
+				mul ecx
+				add eax, refX
+				mov lastX, eax
+				
+				; coordonata pe Y a lui G coincide cu cea a lui E
+				invoke LineTo, hdc, lastX, lastY
+
+				; segmentul GB
+				; coordonata X a lui B coincide cu cea a lui G
+				; coordonata Y a lui B coincide cu referinta
+				
+				invoke MoveToEx, hdc, lastX, lastY, NULL
+				invoke LineTo, hdc, lastX, refY
 
 				invoke EndPaint, hWnd, ADDR ps
 			.ELSE
