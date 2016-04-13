@@ -6,6 +6,15 @@
 ; Am folosit apeluri de functii din WIN32 API
 ; Nu am comentat secvente repetititve
 
+; invoke MoveToEx - seteaza coordonatele spatiale intr-un punct anume
+; invoke LineTo   - traseaza o linie de la sursa ( setata prin MoveToEx ) la coordonate destinatie
+
+; Cubul este desenat in felul urmator
+; Punctul din coltul din stanga va avea coordonatele in puctele de referinta definite in .DATA
+; Am considerat lungimea unei laturi de dimensiune 8L
+; L reprezinta o unitate de lungime variabila, setata in mUnit
+; Pe baza acesteia am obtinut coordonatele punctelor de pe cub si am trasat liniile
+
 .386 ; Arhitectura Intel 
 .model flat, stdcall, C
 option casemap:none
@@ -22,23 +31,18 @@ includelib e:\masm32\lib\user32.lib
 include e:\masm32\include\gdi32.inc
 includelib e:\masm32\lib\gdi32.lib
 
-;include e:\masm32\include\masm32rt.inc
-
-RGB MACRO red, green, blue
-    EXITM % blue SHL 16 + green SHL 8 + red
-ENDM
-
 WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 
 .DATA ; variabile initializate
 	ClassName db "SimpleWinClass", 0
 	AppName   db "Tema SMP", 0	;Titlul ferestrei
 	OurText   db "Win32 assembly is great and easy!", 0
-	mUnit	  DWORD 40 ; unitatea de masura - in acest caz, echivalentul pentru un centimetru
-					; necesar pentru scalare
 
-	refX DWORD 20  ; referinta pe axa X
-	refY DWORD 500 ; referinta pe axa Y
+
+	mUnit	DWORD 40  ; unitatea de masura - in acest caz, echivalentul pentru un centimetru
+					; necesar pentru scalare
+	refX	DWORD 300  ; referinta pe axa X
+	refY	DWORD 500 ; referinta pe axa Y
 
 
 .DATA? ;variabile neinitializate
@@ -132,7 +136,7 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 				
 				;segmentul BC
 				invoke MoveToEx, hdc, lastX, refY, NULL  ; folosesc ebx - coordonata pe X a punctului B, calculata anterior
-													   ; coordonata Y a punctul B este referinta setata			
+														 ; coordonata Y a punctul B este referinta setata			
 	
 				;stabilirea coordonatei X - punctul C
 				mov eax, mUnit 
