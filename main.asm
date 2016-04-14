@@ -1,7 +1,10 @@
 ; Ionut-Daniel DOGARU
 ; Grupa 333 AA
-; Dezvoltat utilizand MASM32
+; Dezvoltat utilizand MASM32 - MS Visual Studio 2015
 ; Aprilie 2016
+
+; GITHUB: https://github.com/danieldogaru/SMP
+; Fisier sursa main.asm
 
 ; Am folosit apeluri de functii din WIN32 API
 ; Nu am comentat secvente repetititve
@@ -16,7 +19,7 @@
 ; Pe baza acesteia am obtinut coordonatele punctelor de pe cub si am trasat liniile
 
 .386 ; Arhitectura Intel 
-.model flat, stdcall, C
+.model flat, stdcall
 option casemap:none
 
 include e:\masm32\include\kernel32.inc
@@ -41,7 +44,7 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 
 	mUnit	DWORD 40  ; unitatea de masura - in acest caz, echivalentul pentru un centimetru
 					; necesar pentru scalare
-	refX	DWORD 300  ; referinta pe axa X
+	refX	DWORD 10  ; referinta pe axa X
 	refY	DWORD 500 ; referinta pe axa Y
 
 
@@ -108,8 +111,6 @@ WinMain proto :DWORD,:DWORD,:DWORD,:DWORD
 		WndProc proc hWnd:HWND, uMsg:UINT, wParam:WPARAM, lParam:LPARAM
 			LOCAL hdc:HDC
 			LOCAL ps:PAINTSTRUCT
-			LOCAL pen:DWORD
-			
 
 			.IF uMsg == WM_DESTROY
 				invoke PostQuitMessage, NULL
